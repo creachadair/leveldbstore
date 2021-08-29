@@ -13,7 +13,7 @@ import (
 // Opener constructs a leveldbstore from an address comprising a path, for use
 // with the store package.
 func Opener(_ context.Context, addr string) (blob.Store, error) {
-	return New(path, &Options{Create: true})
+	return New(addr, &Options{Create: true})
 }
 
 // A Store implements the blob.Store interface backed by a LevelDB file.
