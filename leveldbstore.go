@@ -51,7 +51,7 @@ func (s *Store) Close(_ context.Context) error { return s.db.Close() }
 func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 	data, err := s.db.Get([]byte(key), nil)
 	if err == leveldb.ErrNotFound {
-		return nil, blob.ErrKeyNotFound
+		return nil, blob.KeyNotFound(key)
 	}
 	return data, err
 }
@@ -70,7 +70,7 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 	if ok, err := tr.Has([]byte(opts.Key), nil); err != nil {
 		return err
 	} else if ok {
-		return blob.ErrKeyExists
+		return blob.KeyExists(opts.Key)
 	}
 	if err := tr.Put([]byte(opts.Key), opts.Data, nil); err != nil {
 		return err
@@ -88,7 +88,7 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 	if ok, err := tr.Has([]byte(key), nil); err != nil {
 		return err
 	} else if !ok {
-		return blob.ErrKeyNotFound
+		return blob.KeyNotFound(key)
 	}
 	if err := tr.Delete([]byte(key), nil); err != nil {
 		return err
@@ -100,7 +100,7 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 func (s *Store) Size(ctx context.Context, key string) (int64, error) {
 	data, err := s.db.Get([]byte(key), nil)
 	if err == leveldb.ErrNotFound {
-		return 0, blob.ErrKeyNotFound
+		return 0, blob.KeyNotFound(key)
 	}
 	return int64(len(data)), err
 }
