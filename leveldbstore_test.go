@@ -2,7 +2,6 @@ package leveldbstore_test
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 )
 
 func TestStore(t *testing.T) {
-	path, err := ioutil.TempDir("", "leveldbstore")
+	path, err := os.MkdirTemp("", "leveldbstore")
 	if err != nil {
 		t.Fatalf("Creating temp directory: %v", err)
 	}
