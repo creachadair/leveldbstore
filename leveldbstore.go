@@ -114,6 +114,8 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 			return nil
 		} else if err != nil {
 			return err
+		} else if err := ctx.Err(); err != nil {
+			return err
 		}
 	}
 	return it.Error()
