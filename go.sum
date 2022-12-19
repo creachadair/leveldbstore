@@ -1,5 +1,5 @@
-github.com/creachadair/ffs v0.0.0-20221216064310-8f2e7f7d8113 h1:01QF4ZjBaF7w7ucJLZkIlSyj8vllLGnwF7QUXu2oj7s=
-github.com/creachadair/ffs v0.0.0-20221216064310-8f2e7f7d8113/go.mod h1:yfjXEplRwnW9J/YtklDCaWAAbB0rL9jVuGuUtB2Fx3A=
+github.com/creachadair/ffs v0.0.0-20221219164233-2998be17922b h1:UW1bhrE/faQykqrHN+MJOhxAOC7T4RzVqdZ7pqXAmg4=
+github.com/creachadair/ffs v0.0.0-20221219164233-2998be17922b/go.mod h1:sle0eTqpe2OutwoS/cg42qSzEV5jrl3si8YuVOlR4Fo=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
