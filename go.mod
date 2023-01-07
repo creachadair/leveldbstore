@@ -3,7 +3,7 @@ module github.com/creachadair/leveldbstore
 go 1.18
 
 require (
-	github.com/creachadair/ffs v0.0.0-20230103165302-eb7e3ec6364b
+	github.com/creachadair/ffs v0.0.0-20230104000224-ca474c4162dc
 	github.com/syndtr/goleveldb v1.0.0
 )
 
