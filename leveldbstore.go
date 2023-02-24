@@ -96,15 +96,6 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 	return tr.Commit()
 }
 
-// Size implements the corresponding method of the blob.Store interface.
-func (s *Store) Size(ctx context.Context, key string) (int64, error) {
-	data, err := s.db.Get([]byte(key), nil)
-	if err == leveldb.ErrNotFound {
-		return 0, blob.KeyNotFound(key)
-	}
-	return int64(len(data)), err
-}
-
 // List implements the corresponding method of the blob.Store interface.
 func (s *Store) List(ctx context.Context, start string, f func(string) error) error {
 	it := s.db.NewIterator(&util.Range{Start: []byte(start)}, nil)
