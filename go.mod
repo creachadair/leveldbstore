@@ -1,6 +1,8 @@
 module github.com/creachadair/leveldbstore
 
-go 1.20
+go 1.21
+
+toolchain go1.21.0
 
 require (
 	github.com/creachadair/ffs v0.0.2
@@ -8,7 +10,7 @@ require (
 )
 
 require (
-	github.com/creachadair/mds v0.1.1 // indirect
+	github.com/creachadair/mds v0.2.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 )
