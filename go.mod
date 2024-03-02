@@ -5,12 +5,12 @@ go 1.21
 toolchain go1.21.0
 
 require (
-	github.com/creachadair/ffs v0.3.1
+	github.com/creachadair/ffs v0.3.2
 	github.com/syndtr/goleveldb v1.0.0
 )
 
 require (
-	github.com/creachadair/mds v0.9.0 // indirect
+	github.com/creachadair/mds v0.11.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 )
