@@ -10,7 +10,7 @@ require (
 )
 
 require (
-	github.com/creachadair/mds v0.21.3 // indirect
+	github.com/creachadair/mds v0.21.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 )
