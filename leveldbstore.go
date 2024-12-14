@@ -1,4 +1,4 @@
-// Package leveldbstore implements the blob.Store interface using LevelDB.
+// Package leveldbstore implements the [blob.KV] interface using LevelDB.
 package leveldbstore
 
 import (
@@ -12,26 +12,26 @@ import (
 
 // Opener constructs a leveldbstore from an address comprising a path, for use
 // with the store package.
-func Opener(_ context.Context, addr string) (blob.Store, error) {
+func Opener(_ context.Context, addr string) (blob.KV, error) {
 	return New(addr, &Options{Create: true})
 }
 
-// A Store implements the blob.Store interface backed by a LevelDB file.
-type Store struct {
+// A KV implements the [blob.KV] interface backed by a LevelDB file.
+type KV struct {
 	db *leveldb.DB
 }
 
 // New opens a LevelDB database at path and returns a store associated with
 // that database.
-func New(path string, opts *Options) (*Store, error) {
+func New(path string, opts *Options) (*KV, error) {
 	db, err := leveldb.OpenFile(path, opts.openOptions())
 	if err != nil {
 		return nil, err
 	}
-	return &Store{db: db}, nil
+	return &KV{db: db}, nil
 }
 
-// Options provide optional settings for opening and creating a Store.
+// Options provide optional settings for opening and creating a [KV].
 type Options struct {
 	Create bool // create the database if it does not exist
 }
@@ -45,10 +45,10 @@ func (o *Options) openOptions() *opt.Options {
 }
 
 // Close closes the underlying LevelDB file.
-func (s *Store) Close(_ context.Context) error { return s.db.Close() }
+func (s *KV) Close(_ context.Context) error { return s.db.Close() }
 
-// Get implements the corresponding method of the blob.Store interface.
-func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
+// Get implements the corresponding method of the [blob.KV] interface.
+func (s *KV) Get(ctx context.Context, key string) ([]byte, error) {
 	data, err := s.db.Get([]byte(key), nil)
 	if err == leveldb.ErrNotFound {
 		return nil, blob.KeyNotFound(key)
@@ -56,8 +56,8 @@ func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 	return data, err
 }
 
-// Put implements the corresponding method of the blob.Store interface.
-func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
+// Put implements the corresponding method of the [blob.KV] interface.
+func (s *KV) Put(ctx context.Context, opts blob.PutOptions) error {
 	// For replacement we do not require a transaction.
 	if opts.Replace {
 		return s.db.Put([]byte(opts.Key), opts.Data, nil)
@@ -78,8 +78,8 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 	return tr.Commit()
 }
 
-// Delete implements the corresponding method of the blob.Store interface.
-func (s *Store) Delete(ctx context.Context, key string) error {
+// Delete implements the corresponding method of the [blob.KV] interface.
+func (s *KV) Delete(ctx context.Context, key string) error {
 	tr, err := s.db.OpenTransaction()
 	if err != nil {
 		return err
@@ -96,8 +96,8 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 	return tr.Commit()
 }
 
-// List implements the corresponding method of the blob.Store interface.
-func (s *Store) List(ctx context.Context, start string, f func(string) error) error {
+// List implements the corresponding method of the [blob.KV] interface.
+func (s *KV) List(ctx context.Context, start string, f func(string) error) error {
 	it := s.db.NewIterator(&util.Range{Start: []byte(start)}, nil)
 	defer it.Release()
 	for it.Next() {
@@ -112,8 +112,8 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 	return it.Error()
 }
 
-// Len implements the corresponding method of the blob.Store interface.
-func (s *Store) Len(ctx context.Context) (int64, error) {
+// Len implements the corresponding method of the [blob.KV] interface.
+func (s *KV) Len(ctx context.Context) (int64, error) {
 	var n int64
 	it := s.db.NewIterator(nil, nil)
 	defer it.Release()

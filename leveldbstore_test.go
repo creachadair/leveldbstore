@@ -2,19 +2,15 @@ package leveldbstore_test
 
 import (
 	"context"
-	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/creachadair/ffs/blob/storetest"
 	"github.com/creachadair/leveldbstore"
 )
 
-func TestStore(t *testing.T) {
-	path, err := os.MkdirTemp("", "leveldbstore")
-	if err != nil {
-		t.Fatalf("Creating temp directory: %v", err)
-	}
-	defer os.RemoveAll(path)
+func TestKV(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "leveldbstore")
 	t.Logf("Database path: %q", path)
 
 	s, err := leveldbstore.New(path, &leveldbstore.Options{
