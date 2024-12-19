@@ -5,10 +5,10 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"sync"
 
 	"github.com/creachadair/ffs/blob"
 	"github.com/creachadair/ffs/storage/dbkey"
+	"github.com/creachadair/ffs/storage/monitor"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	"github.com/syndtr/goleveldb/leveldb/util"
@@ -22,7 +22,7 @@ func Opener(_ context.Context, addr string) (blob.StoreCloser, error) {
 
 // Store implements the [blob.StoreCloser] interface over a LevelDB instance.
 type Store struct {
-	*dbMonitor
+	*monitor.M[*leveldb.DB, KV]
 }
 
 // New opens a LevelDB database at path and returns a store associated with
@@ -32,62 +32,14 @@ func New(path string, opts *Options) (Store, error) {
 	if err != nil {
 		return Store{}, err
 	}
-	return Store{dbMonitor: &dbMonitor{
-		db:   db,
-		subs: make(map[string]*dbMonitor),
-		kvs:  make(map[string]KV),
-	}}, nil
-}
-
-type dbMonitor struct {
-	db     *leveldb.DB
-	prefix dbkey.Prefix
-
-	μ    sync.Mutex
-	subs map[string]*dbMonitor
-	kvs  map[string]KV
-}
-
-// Keyspace implements a method of [blob.Store].
-// A successful result has concrete type [KV].
-// This method never reports an error.
-func (d *dbMonitor) Keyspace(_ context.Context, name string) (blob.KV, error) {
-	d.μ.Lock()
-	defer d.μ.Unlock()
-
-	kv, ok := d.kvs[name]
-	if !ok {
-		kv = KV{
-			db:     d.db,
-			prefix: d.prefix.Keyspace(name),
-		}
-		d.kvs[name] = kv
-	}
-	return kv, nil
-}
-
-// Sub implements a method of [blob.Store].
-// This method never reports an error.
-func (d *dbMonitor) Sub(_ context.Context, name string) (blob.Store, error) {
-	d.μ.Lock()
-	defer d.μ.Unlock()
-
-	sub, ok := d.subs[name]
-	if !ok {
-		sub = &dbMonitor{
-			db:     d.db,
-			prefix: d.prefix.Sub(name),
-			subs:   make(map[string]*dbMonitor),
-			kvs:    make(map[string]KV),
-		}
-		d.subs[name] = sub
-	}
-	return sub, nil
+	return Store{M: monitor.New(db, "", func(c monitor.Config[*leveldb.DB]) KV {
+		return KV{db: c.DB, prefix: c.Prefix}
+	})}, nil
 }
 
 // Close implements part of the [blob.StoreCloser] interface, it closes the
 // underlying LevelDB file.
-func (s Store) Close(_ context.Context) error { return s.db.Close() }
+func (s Store) Close(_ context.Context) error { return s.DB.Close() }
 
 // A KV implements the [blob.KV] interface backed by a LevelDB file.
 type KV struct {
