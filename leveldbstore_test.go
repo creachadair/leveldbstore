@@ -1,7 +1,6 @@
 package leveldbstore_test
 
 import (
-	"context"
 	"path/filepath"
 	"testing"
 
@@ -9,7 +8,7 @@ import (
 	"github.com/creachadair/leveldbstore"
 )
 
-func TestKV(t *testing.T) {
+func TestStore(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "leveldbstore")
 	t.Logf("Database path: %q", path)
 
@@ -19,6 +18,5 @@ func TestKV(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New failed: %v", err)
 	}
-	defer s.Close(context.Background())
 	storetest.Run(t, s)
 }
