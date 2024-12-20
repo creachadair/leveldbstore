@@ -32,8 +32,11 @@ func New(path string, opts *Options) (Store, error) {
 	if err != nil {
 		return Store{}, err
 	}
-	return Store{M: monitor.New(db, "", func(c monitor.Config[*leveldb.DB]) KV {
-		return KV{db: c.DB, prefix: c.Prefix}
+	return Store{M: monitor.New(monitor.Config[*leveldb.DB, KV]{
+		DB: db,
+		NewKV: func(_ context.Context, db *leveldb.DB, pfx dbkey.Prefix, _ string) (KV, error) {
+			return KV{db: db, prefix: pfx}, nil
+		},
 	})}, nil
 }
 
