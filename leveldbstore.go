@@ -56,7 +56,7 @@ type Options struct {
 }
 
 func (o *Options) openOptions() *opt.Options {
-	opt := &opt.Options{OpenFilesCacheCapacity: 50, ErrorIfMissing: true}
+	opt := &opt.Options{OpenFilesCacheCapacity: 500, ErrorIfMissing: true}
 	if o != nil {
 		opt.ErrorIfMissing = !o.Create
 	}
@@ -66,10 +66,27 @@ func (o *Options) openOptions() *opt.Options {
 // Get implements the corresponding method of the [blob.KV] interface.
 func (s KV) Get(ctx context.Context, key string) ([]byte, error) {
 	data, err := s.db.Get([]byte(s.prefix.Add(key)), nil)
-	if err == leveldb.ErrNotFound {
+	if errors.Is(err, leveldb.ErrNotFound) {
 		return nil, blob.KeyNotFound(key)
 	}
 	return data, err
+}
+
+// Stat implements the corresponding method of the [blob.KV] interface.
+func (s KV) Stat(ctx context.Context, keys ...string) (blob.StatMap, error) {
+	out := make(blob.StatMap)
+	for _, key := range keys {
+		data, err := s.db.Get([]byte(s.prefix.Add(key)), &opt.ReadOptions{
+			DontFillCache: true,
+		})
+		if errors.Is(err, leveldb.ErrNotFound) {
+			continue
+		} else if err != nil {
+			return nil, err
+		}
+		out[key] = blob.Stat{Size: int64(len(data))}
+	}
+	return out, nil
 }
 
 // Put implements the corresponding method of the [blob.KV] interface.
