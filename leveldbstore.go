@@ -72,19 +72,17 @@ func (s KV) Get(ctx context.Context, key string) ([]byte, error) {
 	return data, err
 }
 
-// Stat implements the corresponding method of the [blob.KV] interface.
-func (s KV) Stat(ctx context.Context, keys ...string) (blob.StatMap, error) {
-	out := make(blob.StatMap)
+// Has implements the corresponding method of the [blob.KV] interface.
+func (s KV) Has(ctx context.Context, keys ...string) (blob.KeySet, error) {
+	var out blob.KeySet
 	for _, key := range keys {
-		data, err := s.db.Get([]byte(s.prefix.Add(key)), &opt.ReadOptions{
-			DontFillCache: true,
-		})
-		if errors.Is(err, leveldb.ErrNotFound) {
-			continue
-		} else if err != nil {
+		ok, err := s.db.Has([]byte(s.prefix.Add(key)), &opt.ReadOptions{DontFillCache: true})
+		if err != nil {
 			return nil, err
 		}
-		out[key] = blob.Stat{Size: int64(len(data))}
+		if ok {
+			out.Add(key)
+		}
 	}
 	return out, nil
 }
