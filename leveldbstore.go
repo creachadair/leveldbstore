@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"iter"
 
 	"github.com/creachadair/ffs/blob"
 	"github.com/creachadair/ffs/storage/dbkey"
@@ -132,30 +133,32 @@ func (s KV) Delete(ctx context.Context, key string) error {
 }
 
 // List implements the corresponding method of the [blob.KV] interface.
-func (s KV) List(ctx context.Context, start string, f func(string) error) error {
-	pfx := []byte(s.prefix)
-	it := s.db.NewIterator(&util.Range{
-		Start: []byte(s.prefix.Add(start)),
-	}, &opt.ReadOptions{
-		DontFillCache: true,
-	})
-	defer it.Release()
-	for it.Next() {
-		if !bytes.HasPrefix(it.Key(), pfx) {
-			break // no more keys in this range
+func (s KV) List(ctx context.Context, start string) iter.Seq2[string, error] {
+	return func(yield func(string, error) bool) {
+		pfx := []byte(s.prefix)
+		it := s.db.NewIterator(&util.Range{
+			Start: []byte(s.prefix.Add(start)),
+		}, &opt.ReadOptions{
+			DontFillCache: true,
+		})
+		defer it.Release()
+		for it.Next() {
+			if err := ctx.Err(); err != nil {
+				yield("", err)
+				return
+			}
+			if !bytes.HasPrefix(it.Key(), pfx) {
+				break // no more keys in this range
+			}
+			dkey := s.prefix.Remove(string(it.Key()))
+			if !yield(dkey, nil) {
+				return
+			}
 		}
-		dkey := s.prefix.Remove(string(it.Key()))
-		if err := f(dkey); errors.Is(err, blob.ErrStopListing) {
-			return nil
-		} else if err != nil {
-			return err
-		}
-
-		if err := ctx.Err(); err != nil {
-			return err
+		if err := it.Error(); err != nil {
+			yield("", err)
 		}
 	}
-	return it.Error()
 }
 
 // Len implements the corresponding method of the [blob.KV] interface.
