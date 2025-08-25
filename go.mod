@@ -5,7 +5,7 @@ go 1.24
 toolchain go1.24.1
 
 require (
-	github.com/creachadair/ffs v0.14.1
+	github.com/creachadair/ffs v0.14.3
 	github.com/syndtr/goleveldb v1.0.0
 )
 
