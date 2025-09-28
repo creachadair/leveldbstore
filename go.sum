@@ -1,7 +1,7 @@
-github.com/creachadair/ffs v0.14.3 h1:gdNa7Cuy0jPPt4JXsY8YUnV/77sYElyypJMNpmU7g+8=
-github.com/creachadair/ffs v0.14.3/go.mod h1:9d77tXXYtbwZUBJUnQ6KIPcwTXSseQuHDX4ibRDWd2Y=
-github.com/creachadair/mds v0.25.3 h1:eE9+aMAV+CooBl5XZKcUuDgQxm7+/f2Of+JT1cX6plM=
-github.com/creachadair/mds v0.25.3/go.mod h1:4hatI3hRM+qhzuAmqPRFvaBM8mONkS7nsLxkcuTYUIs=
+github.com/creachadair/ffs v0.14.4 h1:p7CRNlDTsVOf7HGxHevGC8wa82ZlVBHaQfFNVA6j5AM=
+github.com/creachadair/ffs v0.14.4/go.mod h1:QkwScDEy9rkHfvdjOlC7eEqSg2K/8Hpz0hC0Yvvwm0E=
+github.com/creachadair/mds v0.25.4 h1:rUQqf9ihePG8fhppXohLSY+AdOljU4oYyWVDhWiWhyE=
+github.com/creachadair/mds v0.25.4/go.mod h1:4hatI3hRM+qhzuAmqPRFvaBM8mONkS7nsLxkcuTYUIs=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
