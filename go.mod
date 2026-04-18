@@ -3,14 +3,14 @@ module github.com/creachadair/leveldbstore
 go 1.25.0
 
 require (
-	github.com/creachadair/ffs v0.17.7
+	github.com/creachadair/ffs v0.17.8
 	github.com/syndtr/goleveldb v1.0.0
 )
 
 require (
-	github.com/creachadair/mds v0.26.2 // indirect
+	github.com/creachadair/mds v0.27.1 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/crypto v0.50.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
 )
