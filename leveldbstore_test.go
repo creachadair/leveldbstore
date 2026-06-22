@@ -20,3 +20,16 @@ func TestStore(t *testing.T) {
 	}
 	storetest.Run(t, s)
 }
+
+func BenchmarkStore(b *testing.B) {
+	path := filepath.Join(b.TempDir(), "benchmark.db")
+	s, err := leveldbstore.New(path, &leveldbstore.Options{Create: true})
+	if err != nil {
+		b.Fatal(err)
+	}
+	kv, err := s.KV(b.Context(), "benchmark")
+	if err != nil {
+		b.Fatalf("KV: %v", err)
+	}
+	storetest.BenchmarkKV(b, kv)
+}
